@@ -33,12 +33,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        User authenticatedUser = authenticationService.authenticate(loginUserDto);
+    public ResponseEntity<String> authenticate(@RequestBody LoginUserDto loginUserDto) {
+        //User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
         LoginResponseDto loginResponse = new LoginResponseDto();
 
-        String username=authenticatedUser.getUsername();
-        return new ResponseEntity<>(loginResponse,HttpStatus.OK);
+        //String username=authenticatedUser.getUsername();
+        return new ResponseEntity<>("login success",HttpStatus.OK);
     }
 }
