@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.services.AuthenticationService;
+import com.example.demo.services.JwtService;
 import com.example.demo.dtos.LoginResponseDto;
 import com.example.demo.dtos.LoginUserDto;
 import com.example.demo.dtos.RegisterUserDto;
@@ -20,9 +21,12 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    public AuthenticationController(AuthenticationService authenticationService) {
+    private final JwtService jwtService;
+
+    public AuthenticationController(AuthenticationService authenticationService,JwtService jwtService) {
         
         this.authenticationService = authenticationService;
+        this.jwtService=jwtService;
     }
 
     @PostMapping("/signup")
@@ -34,11 +38,12 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        //User authenticatedUser = authenticationService.authenticate(loginUserDto);
+        User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
-        LoginResponseDto loginResponse = new LoginResponseDto();
+        String jwtToken = jwtService.generateToken(authenticatedUser);
 
-        //String username=authenticatedUser.getUsername();
-        return new ResponseEntity<>("login success",HttpStatus.OK);
+        LoginResponseDto loginResponse = new LoginResponseDto().setToken(jwtToken);
+
+        return new ResponseEntity<>(" user "+authenticatedUser.getUsername()+" "+loginResponse.getToken(),HttpStatus.OK);
     }
 }
